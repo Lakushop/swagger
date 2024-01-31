@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info:
+  title: Dokumen API Cloud Function PORYEK 3- OpenAPI 3.0
+  description: >-
+    Dokumentasi API untuk Proyek kami
+  termsOfService: https://github.com/lakushop
+  contact:
+    email: laku.shop@gmail.com
+  license:
+    name: GCF Package
+    url: https://pkg.go.dev/github.com/lakushop/belakushop
+  version: 1.0.11
+externalDocs:
+  description: Swagger
+  url: https://github.com/lakushop/swagger
+servers:
+  - url: https://asia-southeast2-gismegah.cloudfunctions.net/
+tags:
+  - name: auth
+    description: Authentikasi
+    externalDocs:
+      description: Deskripsi dan Kode Program
+      url: https://github.com/lakushop/belakushop
+  - name: register
+    description: Register Account
+    externalDocs:
+      description: Deskripsi dan Kode Program
+      url: https://github.com/lakushop/belakushop
+  - name: update
+    description: Update Data
+    externalDocs:
+      description: Deskripsi dan Kode Program
+      url: https://github.com/serbaevents/backendSE
+paths:
+  /func-signuppengguna:
+    post:
+      tags:
+        - signuppengguna
+      summary: Register User Without Token
+      description: Daftar Akun User
+      operationId: authService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/func-signuppengguna"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterResponse"
+          examples:
+            user_registered:
+              value:
+                status: true
+                message: user berhasil terdaftar
+        "405":
+          description: Invalid input
+
+  /func-login:
+    post:
+      tags:
+        - auth
+      summary: Login get Token
+      description: Login and Get User Token
+      operationId: authService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/func-login"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+          examples:
+            login_successful:
+              value:
+                status: true
+                message: selamat datang user
+                token: "example_token"
+        "405":
+          description: Invalid input
+
+  /func-insertproduct:
+    post:
+      tags:
+        - data
+      summary: Insert product
+      description: UInsert data gcf
+      operationId: authService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/func-insertproduct"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsertDataResponse"
+        "405":
+          description: Invalid input
+      security:
+        - Login:
+            - write: apiKey
+            - read: apiKey
+
+  /func-get-product:
+    get:
+      tags:
+        - data
+      summary: Get Data Serba Events
+      description: Header auth
+      operationId: GetdataEvents
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetDataResponse"
+          examples:
+            get_data_success:
+              value:
+                status: true
+                message: berhasil ambil data
+                data:
+                  namaproduct: "Baju Anak"
+                  deskripsi: "Baju anak lembut nan nyaman"
+                  kategori: "Pakaian Anak"
+                  Harga: "RP 120.0000"
+        "400":
+          description: Invalid status value
+      security:
+        - Login:
+            - write: apiKey
+            - read: apiKey
+
+components:
+  schemas:
+    Pengguna:
+      type: object
+      properties:
+        NamaLengkap:
+          type: string
+          example: Admin
+        TanggalLahir:
+          type: string
+          example: 21/12/2000
+        JenisKelamin:
+          type: string
+          example: Laki-laki
+        NomorHP:
+          type: string
+          example: 08000000000
+        Alamat:
+          type: string
+          example: Bandung
+        Akun:
+          type: object
+          properties:
+            Email:
+              type: string
+              example: Admin@gmail.com
+            Password:
+              type: string
+              example: admin123
+
+    RegisterResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: user berhasil terdaftar
+
+    Login:
+      type: object
+      properties:
+        Email:
+          type: string
+          example: Admin@gmail.com
+        Password:
+          type: string
+          example: admin123
+
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: selamat datang user
+        token:
+          type: string
+          example: "example_token"
+
+    Product:
+      type: object
+      properties:
+        namaproduct:
+          type: string
+          example: Baju Anak
+        deskripsi:
+          type: string
+          example: Baju anak lembut nan nyaman
+        kategori:
+          type: string
+          example: Baju Anak
+        Harga:
+          type: string
+          example: RP 120.0000
+
+    InsertDataResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: successful operation
+
+    GetDataResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: berhasil ambil data
+        data:
+          $ref: "#/components/schemas/product"
+
+    UpdatePenggunaResponse:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: successful operation
